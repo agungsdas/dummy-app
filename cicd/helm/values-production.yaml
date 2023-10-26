@@ -1,6 +1,6 @@
 replicaCount: 1
 
-environment: "dev"
+environment: "production"
 imageTag: "v0.0.1"
 createSecret: false
 
