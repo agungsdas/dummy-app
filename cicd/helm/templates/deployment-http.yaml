@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-http-{{ .Values.environment }}"
+  namespace: "{{ .Chart.Name }}-{{ .Values.environment }}"
+  labels:
+    app: "{{ .Chart.Name }}-http-{{ .Values.environment }}"
+    environment: {{ .Values.environment }}
+spec:
+  {{- if not .Values.autoscalingHttp.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}-http-{{ .Values.environment }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}-http-{{ .Values.environment }}"
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: "{{ .Chart.Name }}-http-{{ .Values.environment }}"
+          envFrom:
+            - secretRef:
+                name: "{{ .Chart.Name }}-secret-{{ .Values.environment }}"
+          env:
+            - name: INTERFACE
+              value: "http"
+            - name: BASE_PATH
+              value: {{ .Values.configs.basePath }}
+          image: "295611038986.dkr.ecr.ap-southeast-1.amazonaws.com/{{ .Chart.Name }}:{{ .Values.imageTag }}"
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.configs.basePath }}
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.configs.basePath }}
+              port: 3000
