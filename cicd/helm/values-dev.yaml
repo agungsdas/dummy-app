@@ -1,0 +1,35 @@
+replicaCount: 1
+
+environment: "dev"
+imageTag: "v0.0.1"
+createSecret: false
+
+ingressHttp:
+  subnet: "subnet-0eb11942516227deb, subnet-0f5535ee6e353155a, subnet-0d665ab37c7834d61"
+  certificate: "arn:aws:acm:ap-southeast-1:295611038986:certificate/9e275dae-37b5-4f75-a7d0-c2d75ac9e627"
+  groupname: "cazh-staging"
+  domain: "dev-services.cazh.id"
+  path: "/dummy-app"
+
+resourcesHttp:
+  limits:
+    cpu: 400m
+    memory: 512Mi
+  requests:
+    cpu: 400m
+    memory: 512Mi
+
+autoscalingHttp:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+
+configs:
+  basePath: '/dummy-app'
+
+secrets: {}
+
+# secrets:
+#   BASE_PATH: L2R1bW15LWFwcA==
